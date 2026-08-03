@@ -61,8 +61,8 @@ export default async function TeamSettingsPage() {
               </TableRow>
             ) : (
               teamMembers.map((member) => {
-                const profile = member.profiles
-                const role = member.roles
+                const profile: any = Array.isArray(member.profiles) ? member.profiles[0] : member.profiles
+                const role: any = Array.isArray(member.roles) ? member.roles[0] : member.roles
                 
                 const initials = profile?.first_name 
                   ? `${profile.first_name[0]}${profile.last_name ? profile.last_name[0] : ''}`

@@ -1,54 +1,81 @@
-import { Metadata } from 'next'
 import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { login } from '@/app/auth/actions'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
-export const metadata: Metadata = {
-  title: 'Login - Marketplace Audit OS',
-  description: 'Login to your account',
+function getDisplayError(err: unknown): string | null {
+  if (!err) return null
+  if (typeof err === 'string') {
+    const trimmed = err.trim()
+    if (trimmed === '{}' || trimmed === '[object Object]' || trimmed === 'undefined' || !trimmed) {
+      return 'Sign in failed. Please verify your email and password and try again.'
+    }
+    return trimmed
+  }
+  if (typeof err === 'object' && err !== null) {
+    const obj = err as Record<string, unknown>
+    if (typeof obj.message === 'string' && obj.message && obj.message !== '{}' && obj.message !== '[object Object]') {
+      return obj.message
+    }
+    if (typeof obj.error_description === 'string' && obj.error_description && obj.error_description !== '{}') {
+      return obj.error_description
+    }
+    if (typeof obj.error === 'string' && obj.error && obj.error !== '{}') {
+      return obj.error
+    }
+  }
+  return 'Sign in failed. Please verify your email and password and try again.'
 }
 
-export default function LoginPage() {
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>
+}) {
+  const params = await searchParams
+  const displayError = getDisplayError(params.error)
+
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
-            Enter your email below to login to your account.
+    <div className="flex min-h-screen items-center justify-center p-4 bg-muted/20">
+      <Card className="w-full max-w-md border border-border/80 shadow-lg rounded-2xl overflow-hidden">
+        <CardHeader className="space-y-1 text-center pb-6">
+          <CardTitle className="text-2xl font-bold tracking-tight">Welcome back</CardTitle>
+          <CardDescription className="text-sm text-muted-foreground">
+            Enter your email and password to sign in to your account
           </CardDescription>
         </CardHeader>
-        <CardContent>
-          <form className="grid gap-4" action="/api/auth/login" method="post">
-            <div className="grid gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" name="email" placeholder="m@example.com" required />
-            </div>
-            <div className="grid gap-2">
-              <div className="flex items-center">
-                <Label htmlFor="password">Password</Label>
-                <Link href="#" className="ml-auto inline-block text-sm underline">
-                  Forgot your password?
-                </Link>
+        <form action={login}>
+          <CardContent className="space-y-4">
+            {displayError && (
+              <div className="bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20 border border-red-200 p-3.5 rounded-xl text-sm font-medium leading-relaxed">
+                {displayError}
               </div>
-              <Input id="password" type="password" name="password" required />
+            )}
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="m@example.com" required className="h-11 rounded-xl" />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider">Password</Label>
+              </div>
+              <Input id="password" name="password" type="password" required className="h-11 rounded-xl" />
+            </div>
+          </CardContent>
+          <CardFooter className="flex flex-col space-y-4 pt-2">
+            <Button className="w-full h-11 rounded-xl font-semibold text-sm shadow-md transition-all" type="submit">
+              Sign In
             </Button>
-            <Button variant="outline" className="w-full" type="button">
-              Login with Google
-            </Button>
-          </form>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
-            <Link href="/register" className="underline">
-              Sign up
-            </Link>
-          </div>
-        </CardContent>
+            <div className="text-center text-sm text-muted-foreground">
+              Don&apos;t have an account?{' '}
+              <Link href="/signup" className="text-primary font-semibold hover:underline">
+                Sign up
+              </Link>
+            </div>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   )

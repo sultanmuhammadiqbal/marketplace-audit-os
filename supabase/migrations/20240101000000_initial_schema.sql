@@ -15,7 +15,7 @@ CREATE TABLE public.profiles (
 
 -- 2. Organizations
 CREATE TABLE public.organizations (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -23,7 +23,7 @@ CREATE TABLE public.organizations (
 
 -- 3. Roles
 CREATE TABLE public.roles (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL UNIQUE,
   description TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -31,7 +31,7 @@ CREATE TABLE public.roles (
 
 -- 4. Permissions
 CREATE TABLE public.permissions (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   action TEXT NOT NULL UNIQUE, -- e.g., 'clients.read', 'clients.write'
   description TEXT,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -46,7 +46,7 @@ CREATE TABLE public.role_permissions (
 
 -- 6. Organization Memberships
 CREATE TABLE public.organization_memberships (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   user_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE,
   role_id UUID NOT NULL REFERENCES public.roles(id) ON DELETE RESTRICT,
@@ -57,7 +57,7 @@ CREATE TABLE public.organization_memberships (
 
 -- 7. Clients
 CREATE TABLE public.clients (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -75,7 +75,7 @@ CREATE TABLE public.client_memberships (
 
 -- 9. Brands
 CREATE TABLE public.brands (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
   name TEXT NOT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE public.brands (
 
 -- 10. Stores
 CREATE TABLE public.stores (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   client_id UUID REFERENCES public.clients(id) ON DELETE SET NULL,
   brand_id UUID REFERENCES public.brands(id) ON DELETE SET NULL,
@@ -99,7 +99,7 @@ CREATE TABLE public.stores (
 
 -- 11. Activity Logs
 CREATE TABLE public.activity_logs (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   organization_id UUID NOT NULL REFERENCES public.organizations(id) ON DELETE CASCADE,
   user_id UUID REFERENCES public.profiles(id) ON DELETE SET NULL,
   action TEXT NOT NULL,

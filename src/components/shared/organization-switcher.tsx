@@ -33,7 +33,7 @@ import { Label } from '@/components/ui/label'
 import { Database } from '@/types/supabase'
 import { createOrganization } from '@/server/actions/organizations'
 
-type Organization = Database['public']['Tables']['organizations']['Row']
+type Organization = any
 
 interface OrganizationSwitcherProps {
   organizations: Organization[]

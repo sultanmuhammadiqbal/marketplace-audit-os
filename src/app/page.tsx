@@ -14,7 +14,7 @@ export default function Home() {
           <Link href="/login">
             <Button variant="ghost">Sign In</Button>
           </Link>
-          <Link href="/register">
+          <Link href="/signup">
             <Button>Get Started</Button>
           </Link>
         </nav>
@@ -32,7 +32,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="space-x-4 pt-4">
-                <Link href="/register">
+                <Link href="/signup">
                   <Button size="lg">Start Free Trial</Button>
                 </Link>
                 <Link href="/login">
