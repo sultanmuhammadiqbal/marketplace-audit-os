@@ -110,7 +110,7 @@ npx playwright show-report
 ---
 
 ## 🏗️ Architecture Notes
-
+Update Vercel
 - **Multi-Tenancy**: Tenant isolation is enforced at the database level via PostgreSQL Row-Level Security (RLS). All tenant tables (`clients`, `brands`, `stores`, etc.) have an `organization_id` column.
 - **Security Definer Functions**: We use `has_org_role` to check user permissions securely.
 - **Server Actions**: All form submissions (creating organizations, clients, brands, stores) utilize React 19 Server Actions paired with `@supabase/ssr` to ensure secure, server-side data mutations.
